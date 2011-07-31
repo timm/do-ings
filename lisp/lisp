@@ -1,0 +1,15 @@
+#|
+exec /usr/bin/sbcl --noinform --load $0 --end-toplevel-options "$@"
+|#
+(defun main ()
+  "warning: only handles symbols keywords and numbers (not strings or lists)"
+  (let ((args (mapcar 'read-from-string (cdr sb-ext:*posix-argv*))))
+    (if args
+	(apply (car args) (cdr args)))))
+
+ (handler-bind 
+ 	((style-warning #'muffle-warning))
+	(load "main.lisp")
+	(print (main)))
+
+(quit)

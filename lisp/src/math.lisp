@@ -1,0 +1,13 @@
+(defun mean (l)
+  (let ((sum 0) (n 0))
+    (dolist (one l (/ sum n))
+      (incf sum one)
+      (incf n))))
+
+(defun median (l &optional sorted)
+  (if (= 1 (length l))
+      (car l)
+    (let* ((l    (if sorted l (sort (copy-list l) #'>)))
+	   (n    (ceiling (/ (length l) 2)))
+	   (item (nth n l)))
+      (if (oddp n) item (* 0.5 (+ item (nth (- n 1) l)))))))
