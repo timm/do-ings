@@ -7,23 +7,21 @@
   `(loop (unless ,test (return nil))
          ,@body))
 
+(defmacro dohash ((key value hash &optional out) &body body)
+  `(progn 
+     (maphash (lambda (,key ,value)
+		,@body) ,hash)
+     ,out))
+
 (defmacro dov ((one v &optional out) &body body )
   `(progn (loop for ,one across ,v do ,@body)
 	  ,out))
 
-(defmacro dov2 ((one two v1 v2 &optional out) &body body )
-  (let ((max (gensym))
-	(n   (gensym)))
-    `(let ((,max (length ,v1)))
-       (dotimes (,n ,max ,out)
-	 (let ((,one (svref ,v1 ,n))
-	       (,two (svref ,v2 ,n)))
-	   ,@body)))))
-
-(defmacro dov2items ((n one two v1 v2 &optional out) &body body )
+(defmacro dov2 ((n one two v1 v2 &optional out) &body body )
   (let ((max (gensym)))
     `(let ((,max (length ,v1)))
        (dotimes (,n ,max ,out)
 	 (let ((,one (svref ,v1 ,n))
 	       (,two (svref ,v2 ,n)))
 	   ,@body)))))
+
