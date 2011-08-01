@@ -15,13 +15,10 @@
       (if line 
 	  (funcall fn line)))))
 
-(defun reads (f)
-  (if (symbolp f)
-      (setf f (string-downcase
-	       (format nil "~a.lisp" f))))
-  (with-open-file (str f)
-    (reads1 str)))
-
-(defun reads1 (str &aux (line (read str nil)))
-  (when line
-    (cons line (reads1 str))))
+(defun file2list (f &optional (ext ".lisp"))
+  (labels ((worker (stream &aux (line (read stream nil)))
+	     (when line (cons line (worker stream))))
+	   (filename (f)
+	     (if (stringp f) f (format nil "~(~a~a~)" f ext))))
+    (with-open-file (stream (filename f))
+      (worker stream))))

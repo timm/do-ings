@@ -1,0 +1,38 @@
+#|
+exec /usr/bin/sbcl --noinform --load $0 --end-toplevel-options "$@"
+|#
+
+ ;as required by http://goo.gl/PWqZP, print standard LISP greeting
+(let ((line ";---------------------------------------------"))
+  (format *error-output* 
+	  "~&~a~%; LITHP ITH LITHTENING (v0.1)~%~a~%" line line))   
+    
+(labels 
+    ((engage ;http://goo.gl/J91he
+       (&rest files)
+       (handler-bind
+	   ((style-warning #'muffle-warning)) ; turn off stupid warnings
+	 (mapc #'load files)) ; load files
+
+        (let ((args 
+	      (mapcar 'read-from-string ; get command line
+		      (cdr sb-ext:*posix-argv*))))
+	      ; warning: only handles symbols keywords and numbers (not strings or lists)
+	 (if args
+	     (print (apply (car args) (cdr args))))); eval and print command line
+       (quit))) ; bye bye
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; to customize,  edit list of lisp files, below
+
+  (engage
+   "src/defstruct.lisp"
+   "src/macros.lisp"
+   "src/misc.lisp"
+   "src/reading.lisp"
+   "src/math.lisp"
+   "src/random.lisp"
+   "src/col.lisp"
+   "src/file2db.lisp"
+   "src/tar3.lisp"
+)) ;; must close with 2 brackets
